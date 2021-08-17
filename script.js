@@ -68,17 +68,37 @@ const VoiceRSS={
                                             }throw"The browser does not support HTTP request"}};
 
 
-function test() {
-    VoiceRSS.speech({
-        key: '607a0cee8c06491ab05fb0e2b39f4e14',
-        src: 'Hello, world!',
-        hl: 'en-us',
-        v: 'Linda',
-        r: 0, 
-        c: 'mp3',
-        f: '44khz_16bit_stereo',
-        ssml: false
-    });
-}
+// function test() {
+//     VoiceRSS.speech({
+//         key: '607a0cee8c06491ab05fb0e2b39f4e14',
+//         src: 'Hola, mundo!',
+//         hl: 'es-mx',
+//         v: 'Linda',
+//         r: 0, 
+//         c: 'mp3',
+//         f: '44khz_16bit_stereo',
+//         ssml: false
+//     });
+// }
 
-test();
+// test();
+
+// Get Jokes From jokes API
+async function getJokes() {
+    let joke = '';
+    const apiUrl = 'https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,racist,sexist,explicit';
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (data.setup) {
+            joke = `${data.setup}. ${data.delivery}`;
+        } 
+        else {
+            joke = data.joke;
+        }
+    } catch (error) {
+        // Catch errors here
+        console.log('Whoops', error)
+    }
+}
+getJokes();
