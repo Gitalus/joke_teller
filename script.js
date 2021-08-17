@@ -29,7 +29,7 @@ const VoiceRSS={
                             if(4==t.readyState&&200==t.status){
                                 if(0==t.responseText.indexOf("ERROR"))throw t.responseText;
                                 audioElement.src=t.responseText
-                                // ,audioElement.play()
+                                ,audioElement.play()
                             }},
                                 t.open("POST","https://api.voicerss.org/",!0),
                                 t.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8"),
@@ -67,21 +67,25 @@ const VoiceRSS={
 
                                             }throw"The browser does not support HTTP request"}};
 
+// Disable/Enable Button
+function toggleButton () {
+    button.disabled = !button.disabled;
+}
 
-// function test() {
-//     VoiceRSS.speech({
-//         key: '607a0cee8c06491ab05fb0e2b39f4e14',
-//         src: 'Hola, mundo!',
-//         hl: 'es-mx',
-//         v: 'Linda',
-//         r: 0, 
-//         c: 'mp3',
-//         f: '44khz_16bit_stereo',
-//         ssml: false
-//     });
-// }
 
-// test();
+// Passing Jokes from Joke API
+function tellMe(joke) {
+    VoiceRSS.speech({
+        key: '607a0cee8c06491ab05fb0e2b39f4e14',
+        src: joke,
+        hl: 'en-us',
+        v: 'Linda',
+        r: 0, 
+        c: 'mp3',
+        f: '44khz_16bit_stereo',
+        ssml: false
+    });
+}
 
 // Get Jokes From jokes API
 async function getJokes() {
@@ -91,14 +95,21 @@ async function getJokes() {
         const response = await fetch(apiUrl);
         const data = await response.json();
         if (data.setup) {
-            joke = `${data.setup}. ${data.delivery}`;
+            joke = `${data.setup} ... ${data.delivery}`;
         } 
         else {
             joke = data.joke;
         }
+        // Text-to-Speech
+        tellMe(joke);
+        // Disable the button
+        toggleButton();
     } catch (error) {
         // Catch errors here
         console.log('Whoops', error)
     }
 }
-getJokes();
+
+// Event Listeners
+button.addEventListener('click', getJokes);
+audioElement.addEventListener('ended', toggleButton)
